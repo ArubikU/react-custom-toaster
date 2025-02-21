@@ -4,7 +4,8 @@ import * as React from "react"
 
 import type { ToastActionElement, ToastProps } from "./toast"
 
-const TOAST_LIMIT = 5
+// Remove constant limit and use a variable that can be updated.
+let currentToastLimit = 5
 const TOAST_REMOVE_DELAY = 1000000
 
 type ToasterToast = ToastProps & {
@@ -78,13 +79,16 @@ export const reducer = (state: State, action: Action): State => {
     case "ADD_TOAST":
       return {
         ...state,
-        toasts: [action.toast, ...state.toasts].slice(0, TOAST_LIMIT),
+        // Use the currentToastLimit variable here.
+        toasts: [action.toast, ...state.toasts].slice(0, currentToastLimit),
       }
 
     case "UPDATE_TOAST":
       return {
         ...state,
-        toasts: state.toasts.map((t) => (t.id === action.toast.id ? { ...t, ...action.toast } : t)),
+        toasts: state.toasts.map((t) =>
+          t.id === action.toast.id ? { ...t, ...action.toast } : t,
+        ),
       }
 
     case "DISMISS_TOAST": {
@@ -166,7 +170,18 @@ function toast({ titleClassName, descriptionClassName, ...props }: Toast) {
   }
 }
 
-function useToast() {
+interface UseToastOptions {
+  toastLimit?: number
+}
+
+function useToast(options?: UseToastOptions) {
+  // Update the currentToastLimit if a valid value is provided.
+  React.useEffect(() => {
+    if (options?.toastLimit !== undefined) {
+      currentToastLimit = options.toastLimit
+    }
+  }, [options?.toastLimit])
+
   const [state, setState] = React.useState<State>(memoryState)
 
   React.useEffect(() => {
@@ -182,9 +197,9 @@ function useToast() {
   return {
     ...state,
     toast,
-    dismiss: (toastId?: string) => dispatch({ type: "DISMISS_TOAST", toastId }),
+    dismiss: (toastId?: string) =>
+      dispatch({ type: "DISMISS_TOAST", toastId }),
   }
 }
 
 export { toast, useToast }
-

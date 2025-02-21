@@ -1,9 +1,14 @@
 {
   "name": "react-custom-toaster",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A customizable toast notification component for React applications",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ArubikU/react-custom-toaster"
+  },
+  "homepage": "https://github.com/ArubikU/react-custom-toaster",
   "types": "dist/src/index.d.ts",
   "scripts": {
     "build": "rollup -c",

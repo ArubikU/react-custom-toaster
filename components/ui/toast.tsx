@@ -37,8 +37,7 @@ const toastVariants = cva(
           "border-green-500 bg-green-100 text-green-900 dark:border-green-700 dark:bg-green-800 dark:text-green-100",
         warning:
           "border-yellow-500 bg-yellow-100 text-yellow-900 dark:border-yellow-600 dark:bg-yellow-700 dark:text-yellow-100",
-        info:
-          "border-blue-500 bg-blue-100 text-blue-900 dark:border-blue-700 dark:bg-blue-800 dark:text-blue-100",
+        info: "border-blue-500 bg-blue-100 text-blue-900 dark:border-blue-700 dark:bg-blue-800 dark:text-blue-100",
       },
     },
     defaultVariants: {
@@ -47,15 +46,78 @@ const toastVariants = cva(
   },
 )
 
+type BaseToastProps = React.ComponentPropsWithoutRef<typeof ToastPrimitives.Root>
+
+// Added image prop that accepts a URL or a React node.
+export type ToastProps = Omit<BaseToastProps, "open" | "onOpenChange"> &
+  VariantProps<typeof toastVariants> & {
+    icon?: React.ReactNode
+    image?: string | React.ReactNode
+    customVariantClasses?: string
+    onShow?: () => void
+    onClose?: () => void
+    onDisappearNaturally?: () => void
+    // Allow controlled mode if desired.
+    open?: boolean
+    onOpenChange?: (open: boolean) => void
+  }
+
 const Toast = React.forwardRef<
   React.ElementRef<typeof ToastPrimitives.Root>,
-  React.ComponentPropsWithoutRef<typeof ToastPrimitives.Root> &
-    VariantProps<typeof toastVariants> & {
-      icon?: React.ReactNode
+  ToastProps
+>(
+  (
+    {
+      className,
+      variant,
+      customVariantClasses,
+      onShow,
+      onClose,
+      onDisappearNaturally,
+      open: controlledOpen,
+      onOpenChange: controlledOnOpenChange,
+      image, // new prop for image support
+      children,
+      ...props
+    },
+    ref,
+  ) => {
+    const [uncontrolledOpen, setUncontrolledOpen] = React.useState(false)
+    const effectiveOpen = controlledOpen !== undefined ? controlledOpen : uncontrolledOpen
+
+    const handleOpenChange = (isOpen: boolean) => {
+      if (controlledOpen === undefined) setUncontrolledOpen(isOpen)
+      if (isOpen) {
+        onShow?.()
+      } else {
+        onClose?.()
+        onDisappearNaturally?.()
+      }
+      controlledOnOpenChange?.(isOpen)
     }
->(({ className, variant, ...props }, ref) => {
-  return <ToastPrimitives.Root ref={ref} className={cn(toastVariants({ variant }), className)} {...props} />
-})
+
+    return (
+      <ToastPrimitives.Root
+        ref={ref}
+        open={effectiveOpen}
+        onOpenChange={handleOpenChange}
+        className={cn(customVariantClasses || toastVariants({ variant }), className)}
+        {...props}
+      >
+        {image && (
+          <div className="mr-4 flex-shrink-0">
+            {typeof image === "string" ? (
+              <img src={image} alt="Toast image" className="h-6 w-6" />
+            ) : (
+              image
+            )}
+          </div>
+        )}
+        <div className="flex-1">{children}</div>
+      </ToastPrimitives.Root>
+    )
+  },
+)
 Toast.displayName = ToastPrimitives.Root.displayName
 
 const ToastAction = React.forwardRef<
@@ -107,11 +169,15 @@ const ToastDescription = React.forwardRef<
 ))
 ToastDescription.displayName = ToastPrimitives.Description.displayName
 
-type ToastProps = React.ComponentPropsWithoutRef<typeof Toast>
-
 type ToastActionElement = React.ReactElement<typeof ToastAction>
 
 export {
-  Toast, ToastAction, ToastClose, ToastDescription, ToastProvider, ToastTitle, ToastViewport, type ToastActionElement, type ToastProps
+  Toast,
+  ToastAction,
+  ToastClose,
+  ToastDescription,
+  ToastProvider,
+  ToastTitle,
+  ToastViewport,
+  type ToastActionElement
 }
-
