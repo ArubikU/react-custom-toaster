@@ -6,12 +6,16 @@
     "jsx": "react",
     "declaration": true,
     "declarationDir": "dist",
+    "declarationMap": true, // Generar mapas de declaración
+    "emitDeclarationOnly": false, // También compilar JS además de los tipos
     "strict": true,
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "outDir": "dist", // Especificar la carpeta de salida
+    "skipLibCheck": true, // Ignorar comprobaciones en node_modules
+    "forceConsistentCasingInFileNames": true // Asegura consistencia en el nombre de los archivos
   },
   "include": ["src"],
   "exclude": ["node_modules", "dist"]
 }
-

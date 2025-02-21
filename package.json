@@ -1,16 +1,22 @@
 {
   "name": "react-custom-toaster",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "A customizable toast notification component for React applications",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
-  "types": "dist/index.d.ts",
+  "types": "dist/src/index.d.ts",
   "scripts": {
     "build": "rollup -c",
     "test": "jest",
     "prepublishOnly": "npm run build"
   },
-  "keywords": ["react", "toast", "notification", "ui", "component"],
+  "keywords": [
+    "react",
+    "toast",
+    "notification",
+    "ui",
+    "component"
+  ],
   "author": "ArubikU",
   "license": "MIT",
   "peerDependencies": {
@@ -21,6 +27,7 @@
     "@radix-ui/react-toast": "^1.1.5",
     "class-variance-authority": "^0.7.0",
     "lucide-react": "^0.294.0",
+    "react-custom-toaster": "file:",
     "tailwind-merge": "^2.1.0"
   },
   "devDependencies": {
@@ -31,4 +38,3 @@
     "typescript": "^5.3.3"
   }
 }
-

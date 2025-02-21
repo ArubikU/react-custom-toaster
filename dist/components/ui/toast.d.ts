@@ -15,3 +15,4 @@ declare const ToastDescription: React.ForwardRefExoticComponent<Omit<ToastPrimit
 type ToastProps = React.ComponentPropsWithoutRef<typeof Toast>;
 type ToastActionElement = React.ReactElement<typeof ToastAction>;
 export { Toast, ToastAction, ToastClose, ToastDescription, ToastProvider, ToastTitle, ToastViewport, type ToastActionElement, type ToastProps };
+//# sourceMappingURL=toast.d.ts.map
